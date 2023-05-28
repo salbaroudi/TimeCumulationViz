@@ -1,0 +1,18 @@
+{
+  "name": "time-interval-cumulation-viz",
+  "version": "1.0.0",
+  "description": "Visualizations that depict the long term effects of time conservation and maximization.",
+  "main": "index.js",
+  "directories": {
+    "lib": "lib"
+  },
+  "scripts": {
+    "startserver": "browser-sync start --server -f -w"
+  },
+  "author": "Sean al-Baroudi",
+  "license": "MIT",
+  "dependencies": {
+    "browser-sync": "^2.29.3",
+    "http-server": "^14.1.1"
+  }
+}
