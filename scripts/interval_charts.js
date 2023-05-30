@@ -10,7 +10,7 @@ const ic = s => {
     s.hX = 10;
     //Need one value for every hour, from 1 to 24 hrs. Normalized from 0 (Minimum) to 100 (Maximum).
     s.barH = [15, 12, 12, 20, 30, 60, 80, 100, 100, 100, 100, 100, 100, 98, 95, 90, 80, 70, 55, 45, 40, 30, 25, 20];
-
+    s.calendarObj = "";
     //Just for importing our font.
     s.preload = () => {
         s.font = s.loadFont('./assets/VeraType.ttf');
@@ -18,7 +18,7 @@ const ic = s => {
 
     //Make the canvas, set the font settings.
     s.setup = () => {
-        s.createCanvas(1200, 600);
+        s.createCanvas(1600, 600);
         s.textFont(s.font);
         s.textSize(12);
         s.textAlign(s.CENTER, s.CENTER);
@@ -60,9 +60,70 @@ const ic = s => {
 
     }
 
+    s.gencalendar = () => {
+        s.calendarObj = new Calendar();
+        s.calendarObj.genTiles();
+    }
+
     s.draw = function () {
         s.drawaxes();
         s.drawbars();
         s.drawworkline();
+        s.gencalendar();
     };
 };
+
+//We are OUTSIDE our closure after this point (stop "s."ing everything now!!).
+
+//Simply stores an array of days, and is attached to the bounding box.
+class Calendar {
+    constructor() {
+        this.dayTileArr = [];
+    }
+
+    genTiles() {
+       let xStart = 1150;
+       let yStart = 100;
+       for (let i = 0; i < 1; i++) {
+           //if i is div by 7, we move to a new day.
+           //update start square position - shift by 50 and add 5 for margin space.
+           //genearate a new tile.
+           let dTile = new DayTile(i+1,xStart+i*50,xStart+i*50);
+           //add new tile to calendar
+           this.addDayTile(dTile); 
+           //display the tile on the screen.
+           dTile.display();
+        }
+    }
+
+    addDayTile(dtObj){
+        this.dayTileArr.push(dtObj);
+    }
+
+    mousehover() {
+        return;
+    }
+}
+
+class DayTile {
+    constructor(num,pX,pY) {
+        this.daynum = num;
+        this.h = 50;
+        this.w = 50;
+        this.pX = 0;
+        this.pY = 0;
+        //do we need a position?
+    }
+
+    display() {
+        rect(this.pX,this.pY,this.w,this,h);
+    }
+
+    mousehover() {
+        return;
+    }
+
+    mouseclick() {
+        return;
+    }
+}
