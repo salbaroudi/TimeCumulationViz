@@ -23,11 +23,156 @@
 
   <!-- Add remote JavaScript files using <script> import tags -->
   <script src="./lib/p5.min.js"></script>
-  <script src="./scripts/interval_charts.js"></script>
+  <!-- <script src="./scripts/interval_charts.js"></script> -->
 
   <script>
-      //let myp5 = new p5(sketch);
-    //let myp5 = new p5(ic, "barchart");
+  //let myp5 = new p5(sketch);
+  //let myp5 = new p5(ic, "barchart");
+
+  //All the code just slammed into one script....for now.
+
+  //Tick positions.
+  const delX = 1000 / 24;
+  const delY = 400 / 24;
+  //Tick lengths.
+  const hX = 10;
+  //Need one value for every hour, from 1 to 24 hrs. Normalized from 0 (Minimum) to 100 (Maximum).
+  let barH = [15, 12, 12, 20, 30, 60, 80, 100, 100, 100, 100, 100, 100, 98, 95, 90, 80, 70, 55, 45, 40, 30, 25, 20];
+  let calendarObj = "";
+  //Just for importing our font.
+  function preload() {
+    font = loadFont('./assets/VeraType.ttf');
+  }
+
+  //Make the canvas, set the font settings.
+  function setup() {
+    createCanvas(1600, 600);
+    textFont(font);
+    textSize(12);
+    textAlign(CENTER, CENTER);
+  }
+
+  function drawaxes() {
+    //Define points for lines.
+    fill(128);
+    line(100, 500, 1130, 500)
+    line(100, 500, 100, 100)
+
+    //X and Y tick marks.
+    for (let i = 0; i <= 24; i++) {
+      line(100 + delX * i, 500 + hX, 100 + delX * i, 500)
+      text(i + "", 100 + delX * i, 500 + 2 * hX);
+      line(100 - hX, 500 - delY * i, 100, 500 - delY * i)
+      text((5 * i) + "", 100 - 2.5 * hX, 500 - delY * i);
+    }
+
+    //Now position axes labels:
+    text("1hr Interval", 600, 550);
+    push(); //Push Pop allows us to save neutral state, and reload it.
+      translate(50, 300); //remember: rotations are from (0,0), so we must translate and use
+      //relative coordinates.
+      rotate(radians(-90));
+      text("Energy / Productivity", 0, 0);
+    pop();
+  }
+
+  function drawbars() {
+    for (let i = 0; i <= 24; i++) {
+      rect(100 + (delX * (2 * i + 1) / 2 + 6), 500, 30, -barH[i] * 4);
+    }
+  }
+
+  function drawworkline() {
+    fill(255, 0, 0);
+    line(100, 334, 1100, 334);
+  }
+
+  function gencalendar() {
+    calendarObj = new Calendar();
+    calendarObj.genCalendar();
+  }
+
+  function draw() {
+    drawaxes();
+    drawbars();
+    drawworkline();
+    gencalendar();
+  }
+
+  //Simply stores an array of days, and is attached to the bounding box.
+  class Calendar {
+    constructor() {
+      this.dayTileArr = [];
+    }
+
+    genCalendar() {
+      this.genHeader();
+      this.genTiles();
+    }
+
+    genHeader() {
+      for (let i = 0; i < 7; i++) {
+        let tH = 20;
+        let tW = 30;
+        let tSp = 35;
+        rect(1150 + i*tSp,100,tW,tH);
+      }
+    }
+
+    //Grinds out day tiles using the DayTile Class.
+    genTiles() {
+      let tileSp = 35;
+      let row = 0;
+      let col = 0;
+      for (let i = 0; i < 28; i++) {
+        //update start square position - shift by 50 and add 5 for margin space.
+        //genearate a new tile.
+        if (i % 7 == 0) {
+          col = 0;
+          row += 1;
+        }
+        let dTile = new DayTile(i + 1, 1150 + col*tileSp, 100 + row*tileSp);
+        //add new tile to calendar
+        this.addDayTile(dTile);
+        //display the tile on the screen.
+        dTile.display();
+        col +=1;
+      }
+    }
+
+    addDayTile(dtObj) {
+      this.dayTileArr.push(dtObj);
+    }
+
+    mousehover() {
+      return;
+    }
+  }
+
+  class DayTile {
+    constructor(num, pX, pY) {
+      this.daynum = num;
+      this.h = 30;
+      this.w = 30;
+      this.pX = pX;
+      this.pY = pY;
+      //do we need a position?
+    }
+
+    display() {
+      rect(this.pX, this.pY, this.w, this.h);
+    }
+
+    mousehover() {
+      return;
+    }
+
+    mouseclick() {
+      return;
+    }
+  }
+
+
   </script>
 
 </body>
